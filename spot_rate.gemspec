@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["jeff.iacono@gmail.com"]
   gem.description   = %q{get current currency spot rates with ruby}
   gem.summary       = %q{current currency spot rates}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/jeffreyiacono/spot-rate"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
