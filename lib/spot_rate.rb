@@ -1,3 +1,5 @@
+require 'spot_rate/version'
+
 class SpotRate
   class CurrencyNotFound < RuntimeError; end
 
