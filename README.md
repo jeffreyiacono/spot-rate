@@ -34,6 +34,8 @@ If you'd like to register your own currency converter, use the
 `.register_currency_converter` method:
 
 ```ruby
+require 'spot-rate'
+
 class MyRandomCurrencyConverter
   def initialize from_currency, to_currency
     @from_currency = from_currency
