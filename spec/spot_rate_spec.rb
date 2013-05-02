@@ -1,4 +1,4 @@
-require './lib/spot_rate'
+require './lib/spot-rate'
 
 class SomeCurrencyConverter
   def initialize from, to
