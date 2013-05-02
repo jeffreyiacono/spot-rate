@@ -25,9 +25,9 @@ currency converters are registered:
 require 'spot-rate'
 
 puts Time.now
-puts SpotRate.new(:from_currency => 'USD', :to_currency => 'JPY').spot_rate
 # => 2013-05-01 18:34:09 -0700
-# => 98.2221786
+puts SpotRate.new(:from_currency => 'USD', :to_currency => 'CAD').spot_rate
+# => 1.01689986
 ```
 
 If you'd like to register your own currency converter, use the
@@ -48,11 +48,11 @@ class MyRandomCurrencyConverter
 end
 
 SpotRate.register_currency_converter(:random_converter, MyRandomCurrencyConverter)
-spot_rate = SpotRate.new(:from_currency => 'USD', :to_currency => 'JPY')
+spot_rate = SpotRate.new(:from_currency => 'USD', :to_currency => 'CAD')
 puts spot_rate.use(:random_converter).spot_rate
 # => 0.5363022464905228
 puts spot_rate.spot_rate # will go back to using the pre-packaged default Google converter
-# => 98.2221786
+# => 1.01689986
 ```
 
 ## Contributing
