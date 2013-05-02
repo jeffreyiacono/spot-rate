@@ -31,5 +31,5 @@ class SpotRate
   end
 end
 
-require './lib/spot_rate/google_currency_converter'
+require 'spot_rate/google_currency_converter'
 SpotRate.register_currency_converter :default, SpotRate::GoogleCurrencyConverter
