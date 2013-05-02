@@ -1,25 +1,45 @@
-require 'net/http'
 require './lib/spot_rate'
 
+class SomeCurrencyConverter
+  def initialize from, to
+    @from = from
+    @to   = to
+  end
+
+  def spot_rate
+    "#{@from} #{@to}"
+  end
+end
+
 describe SpotRate do
+  describe ".register_currency_converter" do
+    it "adds the converter to the list of available currency converters" do
+      expect(SpotRate.available_converters).to_not include SomeCurrencyConverter
+      SpotRate.register_currency_converter :some_currency_converter, SomeCurrencyConverter
+      expect(SpotRate.available_converters[:some_currency_converter]).to eq SomeCurrencyConverter
+    end
+  end
+
+  describe "#default_currency_converter" do
+    it "is an instance of the Google Currency Converter" do
+      spot_rate = SpotRate.new
+      expect(spot_rate.default_currency_converter).to be_a SpotRate::GoogleCurrencyConverter
+    end
+  end
+
+  describe "#use" do
+    it "returns the spot rate as determined by the requested converter" do
+      SpotRate.register_currency_converter :some_currency_converter, SomeCurrencyConverter
+      spot_rate = SpotRate.new(from_currency: 'something', to_currency: 'another thing')
+      expect(spot_rate.use(:some_currency_converter).spot_rate).to eq "something another thing"
+    end
+  end
+
   describe "#spot_rate" do
-    it "returns a number (no stubbing + requires internet connection)" do
-      converter = described_class.new(from_currency: 'USD', to_currency: 'JPY')
-      expect(converter.spot_rate.class).to eq Float
-    end
-
-    it "returns the spot conversion rate from the from_currency to the to_currency" do
-      Net::HTTP.stub(:get).and_return('{lhs: "1 U.S. dollar",rhs: "98.222 Japanese yen",error: "",icc: true}')
-      converter = described_class.new(from_currency: 'USD', to_currency: 'JPY')
-      expect(converter.spot_rate).to eq 98.222
-    end
-
-    it "handles errors when we get an error code back" do
-      Net::HTTP.stub(:get).and_return('{lhs: "does not matter",rhs: "does not matter",error: "4",icc: true}')
-      converter = described_class.new
-      converter.from_currency = 'USD'
-      converter.to_currency = 'BAD'
-      expect { converter.spot_rate }.to raise_error(SpotRate::CurrencyNotFound)
+    it "returns the spot rate as determined by the default converter" do
+      SpotRate.register_currency_converter :default, SomeCurrencyConverter
+      spot_rate = SpotRate.new(from_currency: 'something', to_currency: 'another thing')
+      expect(spot_rate.spot_rate).to eq "something another thing"
     end
   end
 end

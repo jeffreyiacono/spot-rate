@@ -3,19 +3,33 @@ class SpotRate
 
   attr_accessor :from_currency, :to_currency
 
+  def self.available_converters
+    @@available_converters ||= {}
+  end
+
+  def self.register_currency_converter converter_key, converter_class
+    self.available_converters[converter_key] = converter_class
+  end
+
   def initialize config = {}
-    self.from_currency = config[:from_currency]
-    self.to_currency   = config[:to_currency]
+    @from_currency = config[:from_currency]
+    @to_currency   = config[:to_currency]
+  end
+
+  def use requested_converter_key
+    self.class
+        .available_converters[requested_converter_key]
+          .new(@from_currency, @to_currency)
   end
 
   def spot_rate
-    default_converter.new(self.from_currency, self.to_currency).spot_rate
+    default_currency_converter.spot_rate
   end
 
-private
-
-  def default_converter
-    require './lib/spot_rate/goog_currency_converter'
-    GoogCurrencyConverter
+  def default_currency_converter
+    use(:default)
   end
 end
+
+require './lib/spot_rate/google_currency_converter'
+SpotRate.register_currency_converter :default, SpotRate::GoogleCurrencyConverter

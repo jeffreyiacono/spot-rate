@@ -18,13 +18,39 @@ Or install it yourself as:
 
 ## Usage
 
+A SpotRate instance will by default use the GoogleCurrencyConverter if no other
+currency converters are registered:
+
 ```ruby
 require 'spot-rate'
 
 puts Time.now
 puts SpotRate.new(:from_currency => 'USD', :to_currency => 'JPY').spot_rate
-#=> 2013-05-01 18:34:09 -0700
-#=> 98.2221786
+# => 2013-05-01 18:34:09 -0700
+# => 98.2221786
+```
+
+If you'd like to register your own currency converter, use the
+`.register_currency_converter` method:
+
+```ruby
+class MyRandomCurrencyConverter
+  def initialize from_currency, to_currency
+    @from_currency = from_currency
+    @to_currency   = to_currency
+  end
+
+  def spot_rate
+    rand # yolo
+  end
+end
+
+SpotRate.register_currency_converter(:random_converter, MyRandomCurrencyConverter)
+spot_rate = SpotRate.new(:from_currency => 'USD', :to_currency => 'JPY')
+puts spot_rate.use(:random_converter).spot_rate
+# => 0.5363022464905228
+puts spot_rate.spot_rate # will go back to using the pre-packaged default Google converter
+# => 98.2221786
 ```
 
 ## Contributing
