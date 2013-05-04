@@ -10,7 +10,7 @@ class SpotRate
   end
 
   def self.register_currency_converter converter_key, converter_class
-    self.available_converters[converter_key] = converter_class
+    self.available_converters[converter_key.to_sym] = converter_class
   end
 
   def self.[](hash)
@@ -28,8 +28,8 @@ class SpotRate
 
   def use requested_converter_key
     self.class
-        .available_converters[requested_converter_key]
-          .new(@from_currency, @to_currency)
+        .available_converters[requested_converter_key.to_sym]
+        .new(@from_currency, @to_currency)
   end
 
   def spot_rate
