@@ -21,12 +21,12 @@ class SpotRate
       .spot_rate
   end
 
-  def initialize config = {}
+  def initialize(config = {})
     @from_currency = config[:from_currency]
     @to_currency   = config[:to_currency]
   end
 
-  def use requested_converter_key
+  def use(requested_converter_key)
     self.class
         .available_converters[requested_converter_key.to_sym]
         .new(@from_currency, @to_currency)
