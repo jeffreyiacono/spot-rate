@@ -13,6 +13,14 @@ class SpotRate
     self.available_converters[converter_key] = converter_class
   end
 
+  def self.[](hash)
+    raise ArgumentError unless hash.size <= 2
+
+    new(from_currency: hash.keys.first, to_currency: hash.values.first)
+      .use(hash[:use] || hash[:using] || :default)
+      .spot_rate
+  end
+
   def initialize config = {}
     @from_currency = config[:from_currency]
     @to_currency   = config[:to_currency]

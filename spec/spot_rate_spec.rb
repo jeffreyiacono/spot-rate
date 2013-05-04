@@ -12,6 +12,19 @@ class SomeCurrencyConverter
 end
 
 describe SpotRate do
+  describe "[]" do
+    it "returns the requested spot rate using the requested converter" do
+      SpotRate.register_currency_converter :some_currency_converter, SomeCurrencyConverter
+      expect(SpotRate['this' => 'that', use: :some_currency_converter]).to eq 'this that'
+    end
+
+    it "returns the requested spot rate using the default converter if nothing specified" do
+      stub_converter = stub(:spot_rate => 'this that')
+      SpotRate::GoogleCurrencyConverter.stub(:new).and_return(stub_converter)
+      expect(SpotRate['this' => 'that']).to eq 'this that'
+    end
+  end
+
   describe ".register_currency_converter" do
     it "adds the converter to the list of available currency converters" do
       expect(SpotRate.available_converters).to_not include SomeCurrencyConverter
