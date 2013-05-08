@@ -28,6 +28,10 @@ puts Time.now
 # => 2013-05-01 18:34:09 -0700
 puts SpotRate.new(:from_currency => 'USD', :to_currency => 'CAD').spot_rate
 # => 1.01689986
+
+# or, more concisely:
+puts SpotRate['USD' => 'CAD']
+# => 1.01689986
 ```
 
 If you'd like to register your own currency converter, use the
